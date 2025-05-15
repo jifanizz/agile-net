@@ -1,0 +1,37 @@
+name: srv6_lab
+
+mgmt:
+  network: mgmt_intf
+  bridge: mgmt_bridge
+  ipv4-subnet: 198.18.128.0/18
+  ipv4-gw: 198.18.130.5
+
+
+topology:
+  kinds:
+    xrd:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.4.1
+
+  nodes:
+    bu-xrd-1:
+      kind: xrd
+      mgmt-ipv4: 198.18.128.101
+      startup-config: xrd-config/bu-xrd-1.cfg
+
+    ha-xrd-2:
+      kind: xrd
+      mgmt-ipv4: 198.18.128.102
+      startup-config: xrd-config/ha-xrd-2.cfg
+
+    to-xrd-3:
+      kind: xrd
+      mgmt-ipv4: 198.18.128.103
+      startup-config: xrd-config/to-xrd-3.cfg
+
+
+  links:
+    - endpoints: ["bu-xrd-1:Gi0-0-0-0", "ha-xrd-2:Gi0-0-0-0"]
+    - endpoints: ["bu-xrd-1:Gi0-0-0-1", "to-xrd-3:Gi0-0-0-0"]
+    - endpoints: ["ha-xrd-2:Gi0-0-0-1", "to-xrd-3:Gi0-0-0-1"]
+
